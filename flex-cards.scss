@@ -1,0 +1,97 @@
+// ##############################################################
+// ############ Griffin's Flex-card Functional Mixin ############
+// ##############################################################
+/*
+  Behold!  This is a function that supports the mixin below it.  It
+  automatically calculates margins to the right or left based on
+  percent width of flex items while attempting to maximize the number
+  of items in each row.
+
+  $card-width: % value, self-explanatory
+  $get-columns: 'true' if you want the column count,
+    false if you want margins
+  $max-columns: ignore this unless you plan on having more
+    than 10 columns
+*/
+
+@function calc-margins($card-width: 24%, $get-columns: false, $max-columns: 10){
+  @for $columns from 1 through $max-columns {
+    // if card width is greater than 100 / i...
+    @if $card-width > ( 100 / $columns ) {
+      @if $get-columns == true {
+        @return $columns - 1;
+      }
+      @if $columns == 1 {
+        @return 0%;
+      }
+      @if $columns == 2 {
+        @return calc( 100% - ( $card-width * 2 ) );
+      }
+      @return ( 100% - ( $card-width * ( $columns - 1 ) ) ) / ( $columns - 2 );
+    }
+    @else if $card-width == ( 100 / $columns ) {
+      @if $get-columns == true {
+        @return $columns - 1;
+      }
+      @if $columns == 1 {
+        @return 0%;
+      }
+      @if $columns == 2 {
+        @return calc( 100% - ( $card-width * 2 ) );
+      }
+      @return ( 100% - ( $card-width * ( $columns ) ) ) / ( $columns - 1 );
+    }
+  }
+}
+/*
+  Behold again!  This is a mixin to evenly arrange flex-items such that
+  they are flush with both sides of their container while allowing control
+  of the width of the aforementioned items.
+
+  $card-width: % value, self-explanatory
+  $justification:
+    "flex-start" results in margin-right,
+    "flex-end" results in margin-left.
+    Do yourself a favor and don't bother with values besides the above
+      on account of the lack of support and whatnot.
+      UNPREDICTABLE RESULTS
+  $offset: number of non-flex-card items before first flex-card item.
+    examples include headings, subheadings, and other text
+
+    h1--
+    h2----
+    |[x] [x]|
+    |[x] [x]|
+    |[x]    |
+    |       |
+
+    for the above, assuming these are all in the same container,
+    the offset value would be 2 to skip over the headings
+
+  $interval: this is mostly to skip over hidden divs that are siblings to
+    the relevant flex-card items.  if there are 4 flex-cards and each has
+    a hidden div after it, make the interval 2.  And so on.
+*/
+@mixin flex-cards( $card-width: 24%, $justification: "flex-start", $offset: 0, $interval: 1){
+  width: $card-width;
+
+  $columns: calc-margins( $card-width, true );
+
+  @if $justification == "flex-start" {
+    margin-right: calc-margins( $card-width );
+    &:nth-of-type( #{$interval * $columns}n + #{$columns + $offset} ) {
+      margin-right: 0%;
+    }
+  }
+  @else if $justification == "flex-end" {
+    margin-left: calc-margins( $card-width );
+
+    // &:nth-of-type( #{$interval} * #{$columns}n + #{$columns} + #{$offset} ) {
+    &:nth-of-type( #{$interval * $columns}n + #{1 + $offset} ) {
+      margin-left: 0%;
+    }
+  }
+  @else {
+    content: "fail loudly";
+  }
+}

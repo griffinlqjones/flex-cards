@@ -1,5 +1,5 @@
 # Flex cards is as flex cards do.
-# They do for me what they'll do for you.
+## They do for me what they'll do for you.
 
 This is a functional SCSS mixin to automatically produce uniformly sized and spaced flex items that will be flush with both the left and right sides of the container while avoiding javascript entirely.
 

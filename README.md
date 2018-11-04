@@ -8,6 +8,7 @@ If you have a flex container with rules like this:
 ```
 .flex-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start; // or flex-end
 }
 ```

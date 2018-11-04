@@ -23,6 +23,7 @@ And now here is an example of the above with context.
 ```
 .flex-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   
   .flex-item {
